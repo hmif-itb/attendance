@@ -1,0 +1,26 @@
+{
+  "name": "attendance",
+  "version": "1.0.0",
+  "description": "Simple attendance system",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hmif-itb/attendance.git"
+  },
+  "keywords": [
+    "attendance"
+  ],
+  "author": "HMIFTECH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hmif-itb/attendance/issues"
+  },
+  "homepage": "https://github.com/hmif-itb/attendance#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
