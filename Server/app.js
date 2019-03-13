@@ -39,10 +39,36 @@ app.get('/events/:id',(req,res)=>{
         }
     }).catch(err => {
         res.status(500).json({
-            'detail':err,
+            'detail':err.details,
             'status':500
         });
     });
+});
+
+app.put('/events/:id',[
+        check('name')
+        .trim()
+        .escape()
+        .blacklist(' ')
+        .isAlphanumeric()
+        .exists()
+    ],(req,res)=>{
+        events.edit(req.params.id, req.body.name).then((result)=>{
+            res.sendStatus(200);
+        }).catch((err)=>{
+            console.log(err);
+            if(err.code==5){
+                res.status(404).json({
+                    'detail':'ID not found',
+                    'status': 404
+                });
+            }else{
+                res.status(500).json({
+                    'detail':err.details,
+                    'status':500
+                });
+            }
+        });
 });
 
 app.post('/events',[
@@ -68,11 +94,12 @@ app.post('/events',[
             });
         } else {
             events.add(req.body.name).then((id) => {
+                // res.location('/events/'+ref.id).sendStatus(200);
                 res.json({id: id});
             }).catch((err)=>{
                 console.log(err);
                 res.status(500).json({
-                    'detail':err,
+                    'detail':err.details,
                     'status':500
                 });
             });
