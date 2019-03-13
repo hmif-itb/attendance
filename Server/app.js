@@ -9,6 +9,7 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
+app.use('/mhs', require('./routes/mhs'));
 
 app.get('/', (req, res) => {
     res.send('Welcome to HMIFTECH attendance system');
