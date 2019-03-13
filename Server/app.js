@@ -1,9 +1,5 @@
 require('dotenv').config();
-
 const express = require('express');
-const { check, validationResult } = require('express-validator/check');
-
-const events = require('./datastore/events');
 
 const app = express();
 const port = process.env.PORT;
