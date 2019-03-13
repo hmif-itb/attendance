@@ -1,27 +1,31 @@
+require('dotenv').config();
+
 const express = require('express');
-const firestore = require('@google-cloud/firestore');
 const { check, validationResult } = require('express-validator/check');
 
-const db = new firestore({
-    projectId: process.env.FIRESTORE_ID,
-    keyFilename: process.env.FIRESTORE_KEY,
-});
-
-const dbPath = {
-    events : 'events'
-}
+const events = require('./datastore/events');
 
 const app = express();
-const port = 3000
+const port = process.env.PORT;
 
-app.use(express.json())
+app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('Welcome to HMIFTECH attendance system');
 });
 
 app.get('/events',(req,res)=>{
-    db.collection(dbPath.events).get().then((snapshot)=>{
+    events.list().then((events) => {
+        res.json(events);
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            'detail':err,
+            'status':500
+        });
+    });
+
+    /*db.collection(dbPath.events).get().then((snapshot)=>{
         let items = snapshot.docs.map(item => {
             return {'id':item.id, ...item.data()};
         });
@@ -31,11 +35,27 @@ app.get('/events',(req,res)=>{
             'detail':err,
             'status':500
         });
-    });
+    });*/
 });
 
 app.get('/events/:id',(req,res)=>{
-    db.collection(dbPath.events).doc(req.params.id).get().then((snapshot)=>{
+    events.get(req.params.id).then((event) => {
+        if(event == null) {
+            res.status(404).json({
+                'detail':'ID not found',
+                'status':404
+            });
+        } else {
+            res.json(event);
+        }
+    }).catch(err => {
+        res.status(500).json({
+            'detail':err,
+            'status':500
+        });
+    });
+
+    /*db.collection(dbPath.events).doc(req.params.id).get().then((snapshot)=>{
         if(!snapshot.exists){
             res.status(404).json({
                 'detail':'ID not found',
@@ -49,19 +69,15 @@ app.get('/events/:id',(req,res)=>{
             'detail':err,
             'status':500
         });
-    });
+    });*/
 });
 
 app.post('/events',[
-        check('name')
+        /*check('name')
         .trim()
         .escape()
         .isAlphanumeric()
-        .exists(),
-        check('logo')
-        .trim()
-        .isURL()
-        .exists()
+        .exists()*/
     ],(req,res)=>{
         var errors = validationResult(req);
 
@@ -77,7 +93,17 @@ app.post('/events',[
                 'status':400
             });
         } else {
-            db.collection(dbPath.events).add({
+            events.add(req.body.name).then((id) => {
+                res.json({id: id});
+            }).catch((err)=>{
+                console.log(err);
+                res.status(500).json({
+                    'detail':err,
+                    'status':500
+                });
+            });
+
+            /*db.collection(dbPath.events).add({
                 name: req.body.name,
                 logo: req.body.logo
             }).then((ref)=>{
@@ -88,12 +114,11 @@ app.post('/events',[
                     'detail':err,
                     'status':500
                 });
-            })
-            
+            })*/
         }
 });
 
-app.post('/events',[
+/*app.post('/events',[
         check('name')
         .trim()
         .escape()
@@ -131,8 +156,8 @@ app.post('/events',[
             })
             
         }
-});
+});*/
 
 app.listen(port, () => {
     console.log(`Server started on ${port}!`);
-})
+});
