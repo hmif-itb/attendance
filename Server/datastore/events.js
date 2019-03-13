@@ -32,6 +32,19 @@ exports.get = async function(eventId) {
 };
 
 /**
+ * Edit event by ID
+ * @param eventId event ID
+ * @param eventName event name
+ */
+exports.edit = async function(eventId, eventName) {
+    let result = await db.collection(PATH).doc(eventId).update({
+        name: eventName
+    });
+
+    return result;
+};
+
+/**
  * Add an event
  * @param eventName Event name
  */
