@@ -46,7 +46,7 @@ exports.edit = async function(eventId, eventName) {
 
 /**
  * Add an event
- * @param eventName Event name
+ * @param eventName event name
  */
 exports.add = async function(eventName) {
     let ref = await db.collection(PATH).add({
@@ -54,4 +54,13 @@ exports.add = async function(eventName) {
     });
 
     return ref.id;
+};
+
+/**
+ * Delete an event
+ * @param eventId event ID
+ */
+exports.delete = async function(eventId) {
+    let result = db.collection(PATH).doc(eventId).delete();
+    return result;
 };

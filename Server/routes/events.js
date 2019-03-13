@@ -108,4 +108,18 @@ router.post('/events',[
     }
 });
 
+/**
+ * Delete an event
+ */
+router.delete('/events/:id',(req,res)=>{
+    events.delete(req.params.id).then((result)=>{
+        res.sendStatus(200);
+    }).catch((err)=>{
+        res.status(500).json({
+            'detail':err.details,
+            'status':500
+        });
+    });
+});
+
 module.exports = router;
