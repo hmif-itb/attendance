@@ -5,6 +5,7 @@
 let express = require('express');
 let router = express.Router();
 const events = require('../datastore/events');
+const attendances = require('../datastore/attendances');
 const { check, validationResult } = require('express-validator/check');
 
 /**
@@ -25,22 +26,26 @@ router.get('/events',(req,res)=>{
 /**
  * Get specific event by ID
  */
-router.get('/events/:id',(req,res)=>{
-    events.get(req.params.id).then((event) => {
-        if(event == null) {
-            res.status(404).json({
-                'detail':'ID not found',
-                'status':404
+router.get('/events/:id',[
+        check('id')
+        .trim()
+        .matches(/^[a-zA-Z0-9]{20}$/)
+    ],(req,res)=>{
+        events.get(req.params.id).then((event) => {
+            if(event == null) {
+                res.status(404).json({
+                    'detail':'ID not found',
+                    'status':404
+                });
+            } else {
+                res.json(event);
+            }
+        }).catch(err => {
+            res.status(500).json({
+                'detail':err.details,
+                'status':500
             });
-        } else {
-            res.json(event);
-        }
-    }).catch(err => {
-        res.status(500).json({
-            'detail':err.details,
-            'status':500
         });
-    });
 });
 
 /**
@@ -121,5 +126,57 @@ router.delete('/events/:id',(req,res)=>{
         });
     });
 });
+
+/**
+ * Get attendance list
+ */
+router.get('/events/:id/attendances',(req,res)=>{
+    attendances.listByEvent(req.params.id).then((events) => {
+        res.json(events);
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({
+            'detail':err,
+            'status':500
+        });
+    });
+});
+
+/**
+ * Attend an event
+ */
+router.post('/events/:id/attend',[
+        check('nim')
+        .trim()
+        .escape()
+        .isNumeric()
+        .exists()
+    ],(req,res)=>{
+        let errors = validationResult(req);
+
+        if(!errors.isEmpty()){
+            let field = new Set();
+
+            errors.array().forEach((item)=>{
+                field.add(item.param);
+            });
+
+            res.status(400).json({
+                'detail':'Invalid value for '+[...field].join(', '),
+                'status':400
+            });
+        }else{
+            attendances.add(req.params.id,req.body.nim).then(()=>{
+                res.sendStatus(200);
+            }).catch((err)=>{
+                console.log(err);
+                res.status(500).json({
+                    'detail':err.details,
+                    'status':500
+                });
+            });
+        }
+})
+
 
 module.exports = router;

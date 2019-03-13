@@ -5,6 +5,7 @@
 let express = require('express');
 let router = express.Router();
 const mhs = require('../datastore/mhs');
+const attendances = require('../datastore/attendances');
 const { check, validationResult } = require('express-validator/check');
 
 /**
@@ -137,5 +138,25 @@ router.post('/delete/:id', (req,res)=>{
         });
     });
 });
+
+/**
+ * Get all event attended by a student
+ */
+router.get('/:id/attendances',[
+        check('id')
+        .trim()
+        .toInt()
+    ],(req,res)=>{
+        attendances.listByNIM(req.params.id).then((events)=>{
+            res.json(events);
+        }).catch((err)=>{
+            console.log(err);
+            res.status(500).json({
+                'detail':err,
+                'status':500
+            });
+        });
+});
+
 
 module.exports = router;
