@@ -50,8 +50,7 @@ router.put('/events/:id',[
     check('name')
         .trim()
         .escape()
-        .blacklist(' ')
-        .isAlphanumeric()
+        .matches(/^[a-zA-Z0-9 ]{5,}$/)
         .exists()
 ],(req,res)=>{
     events.edit(req.params.id, req.body.name).then((result)=>{
@@ -79,8 +78,7 @@ router.post('/events',[
     check('name')
         .trim()
         .escape()
-        .blacklist(' ')
-        .isAlphanumeric()
+        .matches(/^[a-zA-Z0-9 ]{5,}$/)
         .exists()
 ],(req,res)=>{
     var errors = validationResult(req);
