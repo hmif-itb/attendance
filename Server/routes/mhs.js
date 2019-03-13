@@ -5,6 +5,7 @@
 let express = require('express');
 let router = express.Router();
 const mhs = require('../datastore/mhs');
+const utils = require('../utils');
 const attendances = require('../datastore/attendances');
 const { check, validationResult } = require('express-validator/check');
 
@@ -47,14 +48,8 @@ router.post('/add',[
     let errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        let field = new Set();
-
-        errors.array().forEach((item)=>{
-            field.add(item.param);
-        });
-
         res.status(400).json({
-            'detail':'Invalid value for '+[...field].join(', '),
+            'detail':utils.paramErrorMessage(errors),
             'status':400
         });
     } else {
@@ -93,14 +88,8 @@ router.post('/update/:id',[
     let errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        let field = new Set();
-
-        errors.array().forEach((item)=>{
-            field.add(item.param);
-        });
-
         res.status(400).json({
-            'detail':'Invalid value for '+[...field].join(', '),
+            'detail':utils.paramErrorMessage(errors),
             'status':400
         });
     } else {
