@@ -3,13 +3,13 @@
  */
 
 const db = require('./firestore');
-const PATH = 'mhs';
+const PATH = 'students';
 
 /**
  * Get student by NIM
  */
 exports.get = async function(nim) {
-    let snapshot = await db.collection(PATH).where('nim', '==', nim).get();
+    let snapshot = await db.collection(PATH).where('nim', '==', String(nim)).get();
 
     let items = snapshot.docs.map(item => {
         return {'id':item.id, ...item.data()};
@@ -32,7 +32,7 @@ exports.add = async function(nim, name) {
     }
 
     let ref = await db.collection(PATH).add({
-        nim: nim,
+        nim: String(nim),
         name: name
     });
 
@@ -52,7 +52,7 @@ exports.update = async function(id, nim, name) {
     }
 
     let ref = await db.collection(PATH).doc(id);
-    let updateSingle = ref.update({name: name, nim: nim});
+    let updateSingle = ref.update({name: name, nim: String(nim)});
 
     return updateSingle;
 };

@@ -23,7 +23,7 @@ exports.listByEvent = async function(eventId) {
  * @param NIM student NIM
  */
 exports.listByNIM = async function(NIM) {
-    let snapshot = await db.collection(PATH).where('nim','==',NIM).get();
+    let snapshot = await db.collection(PATH).where('nim','==',String(NIM)).get();
     let items = snapshot.docs.map(item => {
         return item.data().event;
     });
@@ -39,7 +39,7 @@ exports.listByNIM = async function(NIM) {
 exports.add = async function(eventId,NIM) {
     let ref = await db.collection(PATH).add({
         event: eventId,
-        nim:NIM
+        nim:String(NIM)
     });
 
     return ref.id;
