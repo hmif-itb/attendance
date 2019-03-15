@@ -32,7 +32,7 @@ router.get('/:nim', [
                 res.status(404).json({
                     'detail':'Student not found',
                     'status':404
-                });Pxv3w8SbaM0AOq9NzzHi
+                });
             } else {
                 res.json(student);
             }
