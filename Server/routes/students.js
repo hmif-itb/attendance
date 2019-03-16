@@ -28,7 +28,7 @@ router.get('/:nim', [
         });
     }else{
         mhs.get(req.params.nim).then((student) => {
-            if(student == null) {
+            if(student == null || student.length==0) {
                 res.status(404).json({
                     'detail':'Student not found',
                     'status':404
