@@ -5,6 +5,12 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(express.json());
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    next();
+});
+
 app.use('/students', require('./auth'), require('./routes/students'));
 app.use('/events', require('./auth'), require('./routes/events'));
 app.use('/users', require('./auth'), require('./routes/users'));
