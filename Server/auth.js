@@ -5,10 +5,9 @@ const jwt = require('jsonwebtoken');
 /**
  * Authentication middleware
  */
-module.exports = function(req, res, next) {
-    let token = req.headers.authorization.replace(/Bearer /ig, "");
-
+module.exports = function(req, res, next) {    
     try {
+        let token = req.headers.authorization.replace(/Bearer /ig, "");
         let decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded.data;
         next();

@@ -99,12 +99,16 @@ async function init() {
     let adminPassword = process.env.ADMIN_PASSWORD;
 
     // Try to see if admin user exists
-    let user = await exports.get(adminUsername);
-    if(!user) {
-        console.log(" [*] Creating Administrator user...");
-        // Not exists, create one
-        await exports.add("Administrator", adminUsername, adminPassword);
-        console.log(" [x] Administrator user created!");
+    try{
+        let user = await exports.get(adminUsername);
+        if(!user) {
+            console.log(" [*] Creating Administrator user...");
+            // Not exists, create one
+            await exports.add("Administrator", adminUsername, adminPassword);
+            console.log(" [x] Administrator user created!");
+        }
+    }catch(err){
+        console.error(err);
     }
 }
 
