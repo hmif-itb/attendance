@@ -13,6 +13,9 @@ module.exports = function(req, res, next) {
         next();
     } catch (e) {
         // JWT decode error, throw error
-        res.status(400).json({message: "Invalid auth token provided."});
+        res.status(400).json({
+            detail: "Invalid auth token provided.",
+            status:400
+        });
     }
 };

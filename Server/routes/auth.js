@@ -18,14 +18,20 @@ router.post('/login', async (req,res)=>{
     let user = await users.get(username);
 
     if(!user) {
-        res.status(403).json({message: "Invalid username and/or password"});
+        res.status(403).json({
+            detail: "Invalid username and/or password",
+            status:403
+        });
         return;
     }
 
     let valid = bcrypt.compareSync(password, user.password);
 
     if(!valid) {
-        res.status(403).json({message: "Invalid username and/or password"});
+        res.status(403).json({
+            detail: "Invalid username and/or password",
+            status:403
+        });
         return;
     }
 
